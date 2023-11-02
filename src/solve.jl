@@ -64,7 +64,7 @@ function DiffEqBase.__solve(prob::DiffEqBase.AbstractMonteCarloProblem,
     u,converged = prob.reduction(u,batch_data,I)
     converged && break
   end
-  if typeof(u) <: Vector{Any}
+  if u isa Vector{Any}
     _u = convert(Array{typeof(u[1])},u)
   else
     _u = u
@@ -77,7 +77,7 @@ function batch_func(i,prob,alg,I,kwargs...)
   new_prob = prob.prob_func(deepcopy(prob.prob),i,iter)
   rerun = true
   x = prob.output_func(solve(new_prob,alg;kwargs...),i)
-  if !(typeof(x) <: Tuple)
+  if !(x isa Tuple)
       @warn("output_func should return (out,rerun). See docs for updated details")
       _x = (x,false)
   else
@@ -88,7 +88,7 @@ function batch_func(i,prob,alg,I,kwargs...)
       iter += 1
       new_prob = prob.prob_func(deepcopy(prob.prob),i,iter)
       x = prob.output_func(solve(new_prob,alg;kwargs...),i)
-      if !(typeof(x) <: Tuple)
+      if !(x isa Tuple)
           @warn("output_func should return (out,rerun). See docs for updated details")
           _x = (x,false)
       else
@@ -126,7 +126,7 @@ function solve_batch(prob,alg,::MonteThreads,I,pmap_batch_size,kwargs...)
         iter = 1
         new_prob = prob.prob_func(deepcopy(prob.prob),i,iter)
         x = prob.output_func(solve(new_prob,alg;kwargs...),i)
-        if !(typeof(x) <: Tuple)
+        if !(x isa Tuple)
             warn("output_func should return (out,rerun). See docs for updated details")
             _x = (x,false)
         else
@@ -138,7 +138,7 @@ function solve_batch(prob,alg,::MonteThreads,I,pmap_batch_size,kwargs...)
             iter += 1
             new_prob = prob.prob_func(deepcopy(prob.prob),i,iter)
             x = prob.output_func(solve(new_prob,alg;kwargs...),i)
-            if !(typeof(x) <: Tuple)
+            if !(x isa Tuple)
                 warn("output_func should return (out,rerun). See docs for updated details")
                 _x = (x,false)
             else
@@ -173,7 +173,7 @@ function thread_monte(prob,I,alg,procid,kwargs...)
       new_prob = prob.prob_func(deepcopy(prob.prob),i,iter)
       rerun = true
       x = prob.output_func(solve(new_prob,alg;kwargs...),i)
-      if !(typeof(x) <: Tuple)
+      if !(x isa Tuple)
           warn("output_func should return (out,rerun). See docs for updated details")
           _x = (x,false)
       else
@@ -184,7 +184,7 @@ function thread_monte(prob,I,alg,procid,kwargs...)
           iter += 1
           new_prob = prob.prob_func(deepcopy(prob.prob),i,iter)
           x = prob.output_func(solve(new_prob,alg;kwargs...),i)
-          if !(typeof(x) <: Tuple)
+          if !(x isa Tuple)
               warn("output_func should return (out,rerun). See docs for updated details")
               _x = (x,false)
           else
